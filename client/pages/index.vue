@@ -1,5 +1,5 @@
 <template>
-  <Tutorial/>
+  <PostComponent/>
 </template>
 
 <script>
