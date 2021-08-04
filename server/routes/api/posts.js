@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
 // add post
 router.post('/', async (req, res) => {
     const posts = await loadPostsCollection();
-    await posts.insertOne({
+    await posts.create({
         text: req.body.text,
         createdAt: new Date()
     });
