@@ -2,14 +2,6 @@ import axios from 'axios';
 
 const state = () => ({
     todos: [
-        // {
-        //     id: 1,
-        //     title: 'todo one'
-        // },
-        // {
-        //     id: 2,
-        //     title: 'todo two'
-        // }
     ]
 });
 
@@ -17,13 +9,19 @@ const getters = {
     allTodos: (state) => state.todos
 };
 const actions = {
+    // async fetchTodos({ commit }) {
+    //     const response = await axios.get('http://jsonplaceholder.typicode.com/todos')
+    //     commit('setTodos', response.data)
+    // },
+
     async fetchTodos({ commit }) {
-        const response = await axios.get('http://jsonplaceholder.typicode.com/todos')
+        const response = await axios.get('http://localhost:3001/api/todos')
+        console.log(response.data)
         commit('setTodos', response.data)
     },
 
-    async addTodo({ commit }, title) {
-        const response = await axios.post('http://jsonplaceholder.typicode.com/todos', { title, complete: false })
+    async addTodo({ commit }, task, priority) {
+        const response = await axios.post('http://localhost:3001/api/todos', { task, priority })
         commit('newTodo', response.data)
 
     },
