@@ -1,54 +1,66 @@
 <template>
-  <div>
-    <div class="max-w-screen-lg m-auto">
-      <div class="mt-12 mb-8 text-4xl font-bold">
-        <p class="text-center">{{ $moment().format("MMMM") }}</p>
-      </div>
-      <div class="flex flex-col items-end">
-        <div class="flex flex-row w-5/6 justify-between">
-          <div
-            v-for="date in dates"
-            :key="date"
-            class="
-              border border-b-0 border-blue-500
-              rounded-t
-              h-6
-              w-6
-              text-center
-              pt-
-            "
-          >
-            {{ date }}
-          </div>
-        </div>
-        <div class="flex flex-row w-5/6 justify-between">
-          <div
-            v-for="day in days"
-            :key="day"
-            class="
-              border border-t-0 border-blue-500
-              rounded-b
-              h-6
-              w-6
-              text-center
-              pt-
-            "
-          >
-            {{ day }}
+  <div class="text-blue-700 bg-indigo-50 h-screen overflow-auto">
+    <div class="max-w-screen-lg m-auto mb-20">
+      <p class="pt-12 pb-8 text-5xl font-bold text-center">
+        {{ $moment().format("YYYY") }}
+      </p>
+      <div class="relative h-20">
+        <div
+          v-if="dates"
+          class="flex flex-row w-5/6 justify-around absolute inset-y-0 right-0"
+        >
+          <div v-for="(date, index) in dates" :key="index" class="">
+            <div
+              class="
+                flex flex-col
+                justify-around
+                border border-indigo-200
+                bg-white
+                rounded
+                h-12
+                w-6
+                text-center
+                cursor-default
+              "
+            >
+              <span class="text-xxxs font-semibold">{{ date.month }}</span>
+              <span class="text-sm">{{ date.date }}</span>
+              <span class="text-xxxs font-semibold">{{ date.day }}</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- <div v-if="categories"> -->
       <div class="mb-6" v-for="(category, index) in categories" :key="index">
         <div>
-          <h3>{{ category.category }}</h3>
-          <div v-for="(task, index) in category.tasks" :key="index">
-            {{ task.name }}
+          <h3 class="text-2xl font-medium mb-2">{{ category.category }}</h3>
+          <div
+            class="flex flex-row"
+            v-for="(task, index) in category.tasks"
+            :key="index"
+          >
+            <div class="w-1/6">{{ task.name }}</div>
+
+            <div class="flex flex-row justify-around w-5/6 mb-1">
+              <div
+                class="
+                  border border-indigo-200
+                  bg-white
+                  rounded
+                  h-6
+                  w-6
+                  text-center
+                  cursor-pointer
+                "
+                v-for="(rating, index) in task.ratings"
+                :key="index"
+              >
+                {{ rating.rating }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <!-- </div> -->
     </div>
     <div class="container">
       <!-- <AddTodo /> -->
@@ -66,63 +78,98 @@ export default {
   components: { FilterTodos },
   data() {
     return {
-      dates: [],
-      days: [],
+      dates: [
+        // { id: "19940923", month: "SEP", date: "23", day: "FRI" },
+        // { id: "19700213", month: "FEB", date: "13", day: "FRI" },
+      ],
       tasks: [
         {
           name: "Yoga",
           category: "Daily",
-          rating: [{ date: 3 }],
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
         },
         {
           name: "French",
           category: "Daily",
-          rating: [{ date: 3 }],
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
         },
         {
           name: "Coding",
           category: "Daily",
-          rating: [{ date: 3 }],
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
         },
         {
           name: "Food preparation",
           category: "Routine",
-          rating: [{ date: 3 }],
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
         },
         {
           name: "Wares washing",
           category: "Routine",
-          rating: [{ date: 3 }],
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
         },
         {
           name: "Haircare",
           category: "Routine",
-          rating: [{ date: 3 }],
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
         },
         {
           name: "Clean bedroom",
           category: "Temporary",
-          rating: [{ date: 3 }],
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
         },
         {
           name: "Move bed",
           category: "Temporary",
-          rating: [{ date: 3 }],
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
         },
         {
           name: "Scan pictures",
           category: "Temporary",
-          rating: [{ date: 3 }],
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
         },
         {
           name: "Plant pineapples",
           category: "Garden",
-          rating: [{ date: 3 }],
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
         },
         {
           name: "Plant vicks",
           category: "Garden",
-          rating: [{ date: 3 }],
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
         },
       ],
       categories: [],
@@ -130,22 +177,70 @@ export default {
   },
   mounted() {
     this.createDates();
-    this.groupTaskCategories("Category", this.tasks);
     this.consoleLog();
   },
   methods: {
     createDates() {
-      for (let i = 1; this.dates.length < 30; i++) {
-        this.dates.push(i);
+      let iEnd = this.dates.length - 1;
+
+      let id = this.$moment().format("YYYYMMDD");
+      let month = this.$moment().format("MMM").toUpperCase();
+      let date = this.$moment().format("DD");
+      let day = this.$moment().format("ddd").toUpperCase();
+
+      let today = { id, month, date, day };
+
+      // add today's date to header row
+      if (this.dates.length == 0 || this.dates[iEnd].id != today.id) {
+        this.dates.push(today);
+
+        let emptyArray = {
+          id: "•",
+          month: "•",
+          date: "•",
+          day: "•",
+        };
+
+        while (this.dates.length < 30) {
+          this.dates.unshift(emptyArray);
+        }
+
+        emptyArray = { id: "•", rating: "•" };
+
+        for (let i = 0; i < this.tasks.length; i++) {
+          let rating = { id, rating: 0 };
+          this.tasks[i].ratings.push(rating);
+
+          while (this.tasks[i].ratings.length < 30) {
+            this.tasks[i].ratings.unshift(emptyArray);
+          }
+        }
       }
 
-      let days = ["S", "M", "T", "W", "T", "F", "S"];
-      for (let i = 1; this.days.length < 30; i++) {
-        this.days.push(i);
+      // remove oldest index in array if array length > 30
+      if (this.dates.length > 30) {
+        this.dates.shift();
+
+        for (let i = 0; i < this.tasks.length; i++) {
+          this.tasks[i].ratings.shift();
+        }
       }
+
+      this.groupTaskCategories();
     },
-    groupTaskCategories(key, array) {
-      array = this.tasks;
+    populateTasks() {
+      // on the creation of new tasks, the newly created rating
+      // entry in the ratings array is preceded by 29 empty entries:
+      // { id: "23091994", rating: 2 }
+
+      // for (let i = 0; i < this.tasks.length; i++) {
+      //   this.tasks[i].ratings.shift();
+      // }
+
+      this.groupTaskCategories();
+    },
+    groupTaskCategories() {
+      let array = this.tasks;
 
       for (let i = 0; i < array.length; i++) {
         let taskCategory = array[i].category;
@@ -170,19 +265,19 @@ export default {
       // console.log(this.categories)
     },
     consoleLog() {
-      let time = new Date();
+      // let time = new Date();
       // console.log("day ", time.getDay())
       // console.log("date: ", time.getDate())
       // console.log(time == time.getMonth())
       // console.log("full: ", time.toString())
-      // console.log(this.$moment)
+      // console.log(this.$moment().format("YYYYMMDD"));
     },
   },
 };
 </script>
 
 <style>
-body {
+/* body {
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   line-height: 1.6;
   background: #e8f7f0;
@@ -192,5 +287,5 @@ body {
   margin: auto;
   overflow: auto;
   padding: 0 2rem;
-}
+} */
 </style>
