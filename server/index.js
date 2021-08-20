@@ -9,13 +9,15 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-const posts = require('./routes/api/posts')
-const todos = require('./routes/api/todos')
-const priorities = require('./routes/api/priorities')
+// const posts = require('./routes/api/posts')
+// const todos = require('./routes/api/todos')
+const tasks = require('./routes/api/tasks')
+const dates = require('./routes/api/dates')
 
-app.use('/api/posts', posts)
-app.use('/api/todos', todos)
-// app.use('/api/priorities', priorities)
+// app.use('/api/posts', posts)
+// app.use('/api/todos', todos)
+app.use('/api/tasks', tasks)
+app.use('/api/dates', dates)
 
 const port = process.env.PORT || 3001;
 

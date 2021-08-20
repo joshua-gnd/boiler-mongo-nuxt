@@ -13,14 +13,14 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   methods: {
     ...mapActions(["fetchTodos"]),
-    // onDoubleClick(todo) {
-    //   const updateTodo = {
-    //     id: todo.id,
-    //     title: todo.title,
-    //     completed: !todo.completed
-    //   };
-    //   this.updateTodo(updateTodo);
-    // }
+    onDoubleClick(todo) {
+      const updateTodo = {
+        id: todo.id,
+        title: todo.title,
+        completed: !todo.completed
+      };
+      this.updateTodo(updateTodo);
+    }
   },
 
   computed: mapGetters(["allTodos"]),

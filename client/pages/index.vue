@@ -6,10 +6,10 @@
       </p>
       <div class="relative h-20">
         <div
-          v-if="dates"
+          v-if="allDates"
           class="flex flex-row w-5/6 justify-around absolute inset-y-0 right-0"
         >
-          <div v-for="(date, index) in dates" :key="index" class="">
+          <div v-for="(date, index) in allDates" :key="index" class="">
             <div
               class="
                 flex flex-col
@@ -41,8 +41,8 @@
           >
             <div class="w-1/6">{{ task.name }}</div>
 
-            <div class="flex flex-row justify-around w-5/6 mb-1">
-              <div
+            <!-- <div class="flex flex-row justify-between w-5/6 mb-1"> -->
+            <!-- <div
                 class="
                   border border-indigo-200
                   bg-white
@@ -56,8 +56,34 @@
                 :key="index"
               >
                 {{ rating.rating }}
-              </div>
-            </div>
+              </div> -->
+
+            <form class="flex flex-row justify-between w-5/6 mb-1">
+              <select
+                id="mySelect"
+                class="
+                  border border-indigo-200
+                  bg-white
+                  rounded
+                  h-6
+                  w-6
+                  p-0
+                  m-0
+                  text-center
+                  cursor-pointer
+                "
+                v-for="(rating, index) in task.ratings"
+                :key="index"
+              >
+                <option>{{ rating.rating }}</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+              </select>
+              <!-- <input type="button" onclick="getOption()" value="Click Me!" /> -->
+            </form>
+
+            <!-- </div> -->
           </div>
         </div>
       </div>
@@ -72,16 +98,12 @@
 </template>
 
 <script>
-// import _ from "lodash";
-import FilterTodos from "../components/FilterTodos.vue";
+import { mapGetters, mapActions } from "vuex";
 export default {
-  components: { FilterTodos },
+  // components: { FilterTodos },
   data() {
     return {
-      dates: [
-        // { id: "19940923", month: "SEP", date: "23", day: "FRI" },
-        // { id: "19700213", month: "FEB", date: "13", day: "FRI" },
-      ],
+      dates: [],
       tasks: [
         {
           name: "Yoga",
@@ -173,15 +195,67 @@ export default {
         },
       ],
       categories: [],
+
+      options: [
+        {
+          value: "Option1",
+          label: "Option1",
+        },
+        {
+          value: "Option2",
+          label: "Option2",
+        },
+        {
+          value: "Option3",
+          label: "Option3",
+        },
+        {
+          value: "Option4",
+          label: "Option4",
+        },
+        {
+          value: "Option5",
+          label: "Option5",
+        },
+      ],
+      value: "",
     };
   },
-  mounted() {
-    this.createDates();
+  computed: mapGetters([
+    "allTasks",
+    "allDates",
+    "getTasksLength",
+    "datesLength",
+  ]),
+  created() {
+    this.fetchTasks();
+    // this.fetchDates();
+    this.sizeDatesArray();
+  },
+  async mounted() {
+    // await this.createDates();
+    // await this.affectState();
+    this.groupTaskCategories();
     this.consoleLog();
   },
   methods: {
-    createDates() {
+    ...mapActions(["fetchTasks", "fetchDates", "sizeDatesArray"]),
+
+    async createDates() {
+      // await this.fetchDates();
+
+      let datesLength = null;
+
+      if (this.datesLength == 0) {
+        setTimeout(() => {
+          this.createDates();
+        }, 750);
+      } else {
+        datesLength = await this.datesLength;
+      }
+
       let iEnd = this.dates.length - 1;
+      // let iEnd = datesLength - 1;
 
       let id = this.$moment().format("YYYYMMDD");
       let month = this.$moment().format("MMM").toUpperCase();
@@ -192,6 +266,7 @@ export default {
 
       // add today's date to header row
       if (this.dates.length == 0 || this.dates[iEnd].id != today.id) {
+        // if (datesLength == 0 || this.dates[iEnd].id != today.id) {
         this.dates.push(today);
 
         let emptyArray = {
@@ -202,6 +277,7 @@ export default {
         };
 
         while (this.dates.length < 30) {
+          // while (datesLength < 30) {
           this.dates.unshift(emptyArray);
         }
 
@@ -219,16 +295,16 @@ export default {
 
       // remove oldest index in array if array length > 30
       if (this.dates.length > 30) {
+        // if (datesLength > 30) {
         this.dates.shift();
 
         for (let i = 0; i < this.tasks.length; i++) {
           this.tasks[i].ratings.shift();
         }
       }
-
-      this.groupTaskCategories();
     },
-    populateTasks() {
+
+    createNewTask() {
       // on the creation of new tasks, the newly created rating
       // entry in the ratings array is preceded by 29 empty entries:
       // { id: "23091994", rating: 2 }
@@ -238,6 +314,18 @@ export default {
       // }
 
       this.groupTaskCategories();
+    },
+    adjustRatingColor() {
+      switch (expression) {
+        case x:
+          // code block
+          break;
+        case y:
+          // code block
+          break;
+        default:
+        // code block
+      }
     },
     groupTaskCategories() {
       let array = this.tasks;
@@ -264,28 +352,32 @@ export default {
       // this.categories = _.groupBy(array, "category");
       // console.log(this.categories)
     },
-    consoleLog() {
-      // let time = new Date();
-      // console.log("day ", time.getDay())
-      // console.log("date: ", time.getDate())
-      // console.log(time == time.getMonth())
-      // console.log("full: ", time.toString())
-      // console.log(this.$moment().format("YYYYMMDD"));
+    async consoleLog() {
+      // setTimeout(() => {
+      //   console.log(this.allTasks);
+      // }, 1000);
+      // setTimeout(() => {
+      //   console.log(this.allDates);
+      // }, 1000);
+      // setTimeout(() => {
+      //   console.log(this.datesLength);
+      // }, 1500);
+      // await console.log(this.allTasks);
     },
   },
 };
 </script>
 
 <style>
-/* body {
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-  line-height: 1.6;
-  background: #e8f7f0;
+select {
+  /* for Firefox */
+  -moz-appearance: none;
+  /* for Chrome */
+  -webkit-appearance: none;
 }
-.container {
-  max-width: 1100px;
-  margin: auto;
-  overflow: auto;
-  padding: 0 2rem;
-} */
+
+/* For IE10 */
+select::-ms-expand {
+  display: none;
+}
 </style>

@@ -14,7 +14,7 @@ const state = () => ({
     ]
 });
 const getters = {
-    allTodos: (state) => state.todos
+    // allTodos: (state) => state.todos
 };
 const actions = {};
 const mutations = {};
