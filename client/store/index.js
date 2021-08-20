@@ -4,13 +4,15 @@ import moment from 'moment';
 const state = () => ({
     // todos: [],
     tasks: [],
-    dates: []
+    dates: [],
+    categories: []
 });
 
 const getters = {
     // allTodos: (state) => state.todos,
     allTasks: (state) => state.tasks,
     allDates: (state) => state.dates,
+    allCategories: (state) => state.categories,
     tasksLength: (state) => state.tasks.length,
     datesLength: (state) => state.dates.length,
 
@@ -20,7 +22,6 @@ const actions = {
     // Tasks
     async fetchTasks({ commit }) {
         const response = await axios.get('http://localhost:3001/api/tasks/')
-        // console.log(response.data)
         commit('setTasks', response.data)
     },
 
@@ -53,18 +54,47 @@ const actions = {
         commit('updateTask', response.data);
     },
 
+    async groupTaskCategories({ commit }) {
+        const response = await axios.get('http://localhost:3001/api/tasks/')
+        let tasks = response.data
+        let categories = [];
+
+        for (let i = 0; i < tasks.length; i++) {
+            let taskCategory = tasks[i].category;
+
+            let index = categories.findIndex(function (category, index) {
+                if (category.category == taskCategory) return true;
+            });
+
+            if (index >= 0) {
+                categories[index]["tasks"].push(tasks[i]);
+            } else {
+                let newCategory = {
+                    category: taskCategory,
+                    tasks: [tasks[i]],
+                };
+
+                categories.push(newCategory);
+            }
+        }
+
+        commit('setCategories', categories)
+
+        // this.categories = _.groupBy(array, "category");
+        // console.log(this.categories)
+    },
+
 
     // Dates
     async fetchDates({ commit }) {
         const response = await axios.get('http://localhost:3001/api/dates/')
-        // console.log(response.data)
         commit('setDates', response.data)
     },
 
     async sizeDatesArray({ commit }) {
         const response = await axios.get('http://localhost:3001/api/dates/')
         let dates = response.data
-        console.log(dates.length)
+        // console.log(dates.length)
 
         let dateLength = dates.length
         let dateDelete = dateLength - 30
@@ -82,7 +112,7 @@ const actions = {
             commit('newDate', response.data)
         }
 
-        console.log(dates[iEnd].day, dates[iEnd].date, dates[iEnd].month)
+        // console.log(dates[iEnd].day, dates[iEnd].date, dates[iEnd].month)
 
         // resize array to length 30
         if (dateLength < 30) {
@@ -97,8 +127,7 @@ const actions = {
                 commit('newDate', response2.data)
             }
 
-            console.log("add")
-            console.log("dateLength", dateLength)
+            // console.log("add. date array length: ", dateLength)
 
         } else {
 
@@ -109,8 +138,7 @@ const actions = {
 
             }
 
-            console.log("delete")
-            console.log(dateLength)
+            // console.log("delete. date array length: ", dateLength)
 
         }
 
@@ -134,7 +162,7 @@ const actions = {
             updateDate
         );
 
-        console.log(response.data);
+        // console.log(response.data);
 
         commit('updateDate', response.data);
     }
@@ -161,7 +189,10 @@ const mutations = {
         if (index !== -1) {
             state.dates.splice(index, 1, updateDate);
         }
-    }
+    },
+
+    // categories
+    setCategories: (state, categories) => (state.categories = categories),
 
 };
 

@@ -4,102 +4,26 @@
       <p class="pt-12 pb-8 text-5xl font-bold text-center">
         {{ $moment().format("YYYY") }}
       </p>
-      <div class="relative h-20">
-        <div
-          v-if="allDates"
-          class="flex flex-row w-5/6 justify-around absolute inset-y-0 right-0"
-        >
-          <div v-for="(date, index) in allDates" :key="index" class="">
-            <div
-              class="
-                flex flex-col
-                justify-around
-                border border-indigo-200
-                bg-white
-                rounded
-                h-12
-                w-6
-                text-center
-                cursor-default
-              "
-            >
-              <span class="text-xxxs font-semibold">{{ date.month }}</span>
-              <span class="text-sm">{{ date.date }}</span>
-              <span class="text-xxxs font-semibold">{{ date.day }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="mb-6" v-for="(category, index) in categories" :key="index">
-        <div>
-          <h3 class="text-2xl font-medium mb-2">{{ category.category }}</h3>
-          <div
-            class="flex flex-row"
-            v-for="(task, index) in category.tasks"
-            :key="index"
-          >
-            <div class="w-1/6">{{ task.name }}</div>
-
-            <!-- <div class="flex flex-row justify-between w-5/6 mb-1"> -->
-            <!-- <div
-                class="
-                  border border-indigo-200
-                  bg-white
-                  rounded
-                  h-6
-                  w-6
-                  text-center
-                  cursor-pointer
-                "
-                v-for="(rating, index) in task.ratings"
-                :key="index"
-              >
-                {{ rating.rating }}
-              </div> -->
-
-            <form class="flex flex-row justify-between w-5/6 mb-1">
-              <select
-                id="mySelect"
-                class="
-                  border border-indigo-200
-                  bg-white
-                  rounded
-                  h-6
-                  w-6
-                  p-0
-                  m-0
-                  text-center
-                  cursor-pointer
-                "
-                v-for="(rating, index) in task.ratings"
-                :key="index"
-              >
-                <option>{{ rating.rating }}</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-              </select>
-              <!-- <input type="button" onclick="getOption()" value="Click Me!" /> -->
-            </form>
-
-            <!-- </div> -->
-          </div>
-        </div>
-      </div>
+      <DateDisplay />
+      <Tasks />
     </div>
+
     <div class="container">
       <!-- <AddTodo /> -->
       <!-- <FilterTodos/> -->
       <!-- <Todos /> -->
     </div>
     <!-- <PostComponent /> -->
+    
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import DateDisplay from "../components/DatesDisplay.vue";
 export default {
+  components: { DateDisplay },
   // components: { FilterTodos },
   data() {
     return {
@@ -221,25 +145,16 @@ export default {
       value: "",
     };
   },
-  computed: mapGetters([
-    "allTasks",
-    "allDates",
-    "getTasksLength",
-    "datesLength",
-  ]),
+  computed: mapGetters(["allTasks"]),
   created() {
-    this.fetchTasks();
-    // this.fetchDates();
-    this.sizeDatesArray();
+    // this.groupTaskCategories();
   },
   async mounted() {
     // await this.createDates();
-    // await this.affectState();
-    this.groupTaskCategories();
     this.consoleLog();
   },
   methods: {
-    ...mapActions(["fetchTasks", "fetchDates", "sizeDatesArray"]),
+    ...mapActions(["fetchTasks", "fetchDates"]),
 
     async createDates() {
       // await this.fetchDates();
@@ -313,7 +228,7 @@ export default {
       //   this.tasks[i].ratings.shift();
       // }
 
-      this.groupTaskCategories();
+      this.groupTaskCategory();
     },
     adjustRatingColor() {
       switch (expression) {
@@ -327,38 +242,27 @@ export default {
         // code block
       }
     },
-    groupTaskCategories() {
-      let array = this.tasks;
-
-      for (let i = 0; i < array.length; i++) {
-        let taskCategory = array[i].category;
-
-        let index = this.categories.findIndex(function (category, index) {
-          if (category.category == taskCategory) return true;
-        });
-
-        if (index >= 0) {
-          this.categories[index]["tasks"].push(array[i]);
-        } else {
-          let newCategory = {
-            category: taskCategory,
-            tasks: [array[i]],
-          };
-
-          this.categories.push(newCategory);
-        }
-      }
-
+    groupTaskCategory() {
+      // let array = this.tasks;
+      // for (let i = 0; i < array.length; i++) {
+      //   let taskCategory = array[i].category;
+      //   let index = this.categories.findIndex(function (category, index) {
+      //     if (category.category == taskCategory) return true;
+      //   });
+      //   if (index >= 0) {
+      //     this.categories[index]["tasks"].push(array[i]);
+      //   } else {
+      //     let newCategory = {
+      //       category: taskCategory,
+      //       tasks: [array[i]],
+      //     };
+      //     this.categories.push(newCategory);
+      //   }
+      // }
       // this.categories = _.groupBy(array, "category");
       // console.log(this.categories)
     },
     async consoleLog() {
-      // setTimeout(() => {
-      //   console.log(this.allTasks);
-      // }, 1000);
-      // setTimeout(() => {
-      //   console.log(this.allDates);
-      // }, 1000);
       // setTimeout(() => {
       //   console.log(this.datesLength);
       // }, 1500);
