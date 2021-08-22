@@ -8,7 +8,7 @@ const TaskSchema = new Schema({
     },
     category: { type: String, default: "Other" },
     ratings: [{
-        id: String,
+        id: Number,
         rating: Number
     }],
     // createdAt: { type: Date, default: Date.now }

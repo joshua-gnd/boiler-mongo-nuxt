@@ -5,7 +5,7 @@
         {{ $moment().format("YYYY") }}
       </p>
 
-      <DateDisplay />
+      <DatesDisplay />
       <Tasks />
     </div>
 
@@ -21,103 +21,13 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import DateDisplay from "../components/DatesDisplay.vue";
+import DatesDisplay from "../components/DatesDisplay.vue";
+import Tasks from "../components/Tasks.vue";
 export default {
-  components: { DateDisplay },
-  // components: { FilterTodos },
+  components: { DatesDisplay, Tasks },
   data() {
     return {
       dates: [],
-      tasks: [
-        {
-          name: "Yoga",
-          category: "Daily",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "French",
-          category: "Daily",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Coding",
-          category: "Daily",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Food preparation",
-          category: "Routine",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Wares washing",
-          category: "Routine",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Haircare",
-          category: "Routine",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Clean bedroom",
-          category: "Temporary",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Move bed",
-          category: "Temporary",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Scan pictures",
-          category: "Temporary",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Plant pineapples",
-          category: "Garden",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Plant vicks",
-          category: "Garden",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-      ],
       categories: [],
 
       options: [

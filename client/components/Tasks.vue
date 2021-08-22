@@ -28,6 +28,7 @@
               :key="index"
             >
               <option>{{ rating.rating }}</option>
+              <option>0</option>
               <option>1</option>
               <option>2</option>
               <option>3</option>
@@ -45,12 +46,107 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 export default {
+  date() {
+    return {
+      tasks: [
+        {
+          name: "Yoga",
+          category: "Daily",
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
+        },
+        {
+          name: "French",
+          category: "Daily",
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
+        },
+        {
+          name: "Coding",
+          category: "Daily",
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
+        },
+        {
+          name: "Food preparation",
+          category: "Routine",
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
+        },
+        {
+          name: "Wares washing",
+          category: "Routine",
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
+        },
+        {
+          name: "Haircare",
+          category: "Routine",
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
+        },
+        {
+          name: "Clean bedroom",
+          category: "Temporary",
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
+        },
+        {
+          name: "Move bed",
+          category: "Temporary",
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
+        },
+        {
+          name: "Scan pictures",
+          category: "Temporary",
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
+        },
+        {
+          name: "Plant pineapples",
+          category: "Garden",
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
+        },
+        {
+          name: "Plant vicks",
+          category: "Garden",
+          ratings: [
+            // { id: "23091994", rating: 2 },
+            // { id: "13021970", rating: 3 },
+          ],
+        },
+      ],
+    };
+  },
   computed: mapGetters(["allTasks", "allCategories"]),
   created() {
+    this.sizeRatingsArray();
     this.groupTaskCategories();
   },
   methods: {
-    ...mapActions(["groupTaskCategories"]),
+    ...mapActions(["sizeRatingsArray", "groupTaskCategories"]),
   },
 };
 </script>

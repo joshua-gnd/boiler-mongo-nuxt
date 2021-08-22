@@ -25,6 +25,43 @@ const actions = {
         commit('setTasks', response.data)
     },
 
+    async sizeRatingsArray({ commit }) {
+        const response = await axios.get('http://localhost:3001/api/dates/')
+        let dates = response.data
+
+        const response2 = await axios.get('http://localhost:3001/api/tasks/')
+        let tasks = response2.data
+
+        // creating an index in the tasks' ratings array for each date
+
+        for (let i = 0; i < tasks.length; i++) {
+            for (let j = 0; j < dates.length; j++) {
+                if (tasks[i].ratings[j].id != dates[j].id) {
+                    let id = dates[j].id
+                    let rating = 0
+                    tasks[i].ratings[j] = { id, rating }
+                }
+            }
+
+            let id = tasks[i]._id
+            let ratings = tasks[i].ratings
+            let updateTask = { ratings }
+
+            const response3 = await axios.put(
+                `http://localhost:3001/api/tasks/${id}`,
+                updateTask
+            );
+
+            commit('updateTask', response3.data);
+        }
+
+        console.log(dates)
+        console.log(tasks)
+
+        commit('setTasks', tasks)
+
+    },
+
     async addTask({ commit }, task, priority) {
         const response = await axios.post('http://localhost:3001/api/tasks/', { task, priority })
         commit('newTask', response.data)
@@ -48,8 +85,6 @@ const actions = {
             `http://localhost:3001/api/tasks/${updateTask.id}`,
             updateTask
         );
-
-        console.log(response.data);
 
         commit('updateTask', response.data);
     },
@@ -77,6 +112,8 @@ const actions = {
                 categories.push(newCategory);
             }
         }
+
+        // console.log(categories)
 
         commit('setCategories', categories)
 
@@ -117,7 +154,7 @@ const actions = {
         // resize array to length 30
         if (dateLength < 30) {
 
-            id = "•"
+            id = 0
             month = "•"
             date = 0
             day = "•"

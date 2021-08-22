@@ -2,7 +2,7 @@ const mongoose = require('mongoose', { useUnifiedTopology: true });
 const Schema = mongoose.Schema
 
 const DateSchema = new Schema({
-        id: String,
+        id: Number,
         month: String,
         date: Number,
         day: String
