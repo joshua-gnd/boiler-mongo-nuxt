@@ -1,11 +1,12 @@
 import axios from 'axios';
 import moment from 'moment';
+import _ from 'lodash';
 
 const state = () => ({
-    // todos: [],
     tasks: [],
     dates: [],
-    categories: []
+    categories: [],
+    selectCategories: []
 });
 
 const getters = {
@@ -13,9 +14,7 @@ const getters = {
     allTasks: (state) => state.tasks,
     allDates: (state) => state.dates,
     allCategories: (state) => state.categories,
-    tasksLength: (state) => state.tasks.length,
-    datesLength: (state) => state.dates.length,
-
+    selectCategories: (state) => state.selectCategories,
 };
 
 const actions = {
@@ -55,30 +54,36 @@ const actions = {
             commit('updateTask', response3.data);
         }
 
-        console.log(dates)
-        console.log(tasks)
-
         commit('setTasks', tasks)
 
     },
 
-    async addTask({ commit }, task, priority) {
-        const response = await axios.post('http://localhost:3001/api/tasks/', { task, priority })
-        commit('newTask', response.data)
+    async addTask({ commit }, task) {
+        const response = await axios.get('http://localhost:3001/api/dates/')
+        let dates = response.data
+
+        let name = task.name
+        let category = task.category
+        let ratings = []
+
+        for (let i = 0; i < dates.length; i++) {
+            let id = dates[i].id
+            let rating = 0
+            ratings.push({ id, rating })
+        }
+
+        const response2 = await axios.post('http://localhost:3001/api/tasks/', { name, category, ratings })
+        commit('newTask', response2.data)
+
+        // commit('setTasks', response2.data)
 
     },
 
     async deleteTask({ commit }, id) {
-        await axios.delete(`http://localhost:3001/api/dates/${id}`)
+        console.log(id)
+        await axios.delete(`http://localhost:3001/api/tasks/${id}`)
         commit('removeTask', id)
     },
-
-    // async filterTasks({ commit }, event) {
-    //     // get selected number
-    //     const limit = parseInt(event.target.options[event.target.options.selectedIndex].value);
-    //     const response = await axios.get(`http://jsonplaceholder.typicode.com/tasks?_limit=${limit}`)
-    //     commit('setTasks', response.data)
-    // },
 
     async updateTask({ commit }, updateTask) {
         const response = await axios.put(
@@ -89,7 +94,7 @@ const actions = {
         commit('updateTask', response.data);
     },
 
-    async groupTaskCategories({ commit }) {
+    async fetchCategories({ commit }) {
         const response = await axios.get('http://localhost:3001/api/tasks/')
         let tasks = response.data
         let categories = [];
@@ -121,6 +126,20 @@ const actions = {
         // console.log(this.categories)
     },
 
+    async fetchCategoryOther({ commit, dispatch, getters }) {
+        await dispatch('fetchCategories')
+        let categories = [...getters.allCategories]
+
+        // check if any key of category has a value of other
+        let index = _.findIndex(categories, { 'category': 'Other' });
+
+        if (index < 0) {
+            categories.push({ category: "Other" })
+        }
+
+        commit('setselectCategories', categories)
+    },
+
 
     // Dates
     async fetchDates({ commit }) {
@@ -131,7 +150,6 @@ const actions = {
     async sizeDatesArray({ commit }) {
         const response = await axios.get('http://localhost:3001/api/dates/')
         let dates = response.data
-        // console.log(dates.length)
 
         let dateLength = dates.length
         let dateDelete = dateLength - 30
@@ -230,6 +248,7 @@ const mutations = {
 
     // categories
     setCategories: (state, categories) => (state.categories = categories),
+    setselectCategories: (state, selectCategories) => (state.selectCategories = selectCategories),
 
 };
 

@@ -10,8 +10,7 @@ const TaskSchema = new Schema({
     ratings: [{
         id: Number,
         rating: Number
-    }],
-    // createdAt: { type: Date, default: Date.now }
+    }]
 }),
 
     Task = mongoose.model('task', TaskSchema)

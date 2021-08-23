@@ -8,7 +8,13 @@
           v-for="(task, index) in category.tasks"
           :key="index"
         >
-          <div class="w-1/6">{{ task.name }}</div>
+          <div class="w-1/6 flex flex-row justify-between">
+            <span>{{ task.name }}</span>
+            <i
+              @click="confirmTaskDelete(task._id)"
+              class="el-icon-delete mr-3 pt-1 cursor-pointer"
+            ></i>
+          </div>
 
           <form class="flex flex-row justify-between w-5/6 mb-1">
             <select
@@ -49,54 +55,6 @@ export default {
   date() {
     return {
       tasks: [
-        {
-          name: "Yoga",
-          category: "Daily",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "French",
-          category: "Daily",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Coding",
-          category: "Daily",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Food preparation",
-          category: "Routine",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Wares washing",
-          category: "Routine",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Haircare",
-          category: "Routine",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
         {
           name: "Clean bedroom",
           category: "Temporary",
@@ -143,10 +101,35 @@ export default {
   computed: mapGetters(["allTasks", "allCategories"]),
   created() {
     this.sizeRatingsArray();
-    this.groupTaskCategories();
+    this.fetchCategories();
   },
   methods: {
-    ...mapActions(["sizeRatingsArray", "groupTaskCategories"]),
+    ...mapActions(["sizeRatingsArray", "fetchCategories", "deleteTask"]),
+    confirmTaskDelete(taskId) {
+      this.$confirm(
+        "This task will be permanently deleted. Would you like to continue?",
+        "Warning",
+        {
+          confirmButtonText: "OK",
+          cancelButtonText: "Cancel",
+          type: "warning",
+          center: true,
+        }
+      )
+        .then(() => {
+          this.deleteTask(taskId);
+          this.$message({
+            type: "success",
+            message: "Delete completed",
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "Delete canceled",
+          });
+        });
+    },
   },
 };
 </script>
