@@ -24,7 +24,7 @@ const actions = {
         commit('setTasks', response.data)
     },
 
-    async sizeRatingsArray({ commit }) {
+    async addRatings({ commit }) {
         const response = await axios.get('http://localhost:3001/api/dates/')
         let dates = response.data
 
@@ -64,15 +64,15 @@ const actions = {
 
         let name = task.name
         let category = task.category
-        let ratings = []
+        // let ratings = []
 
-        for (let i = 0; i < dates.length; i++) {
-            let id = dates[i].id
-            let rating = 0
-            ratings.push({ id, rating })
-        }
+        // for (let i = 0; i < dates.length; i++) {
+        //     let id = dates[i].id
+        //     let rating = 0
+        //     ratings.push({ id, rating })
+        // }
 
-        const response2 = await axios.post('http://localhost:3001/api/tasks/', { name, category, ratings })
+        const response2 = await axios.post('http://localhost:3001/api/tasks/', { name, category })
         commit('newTask', response2.data)
 
         // commit('setTasks', response2.data)
@@ -80,7 +80,6 @@ const actions = {
     },
 
     async deleteTask({ commit }, id) {
-        console.log(id)
         await axios.delete(`http://localhost:3001/api/tasks/${id}`)
         commit('removeTask', id)
     },
@@ -220,7 +219,14 @@ const actions = {
         // console.log(response.data);
 
         commit('updateDate', response.data);
-    }
+    },
+
+    // Ratings
+    async addRating({ commit }, id, rating, taskId) {
+        const response = await axios.post(`http://localhost:3001/api/ratings/${taskId}`, { id, rating })
+        commit('newRating', response.data)
+
+    },
 };
 
 const mutations = {
@@ -250,6 +256,8 @@ const mutations = {
     setCategories: (state, categories) => (state.categories = categories),
     setselectCategories: (state, selectCategories) => (state.selectCategories = selectCategories),
 
+    // ratings
+    newRating: (state, rating) => {},
 };
 
 export default {

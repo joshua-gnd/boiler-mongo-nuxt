@@ -54,57 +54,16 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   date() {
     return {
-      tasks: [
-        {
-          name: "Clean bedroom",
-          category: "Temporary",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Move bed",
-          category: "Temporary",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Scan pictures",
-          category: "Temporary",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Plant pineapples",
-          category: "Garden",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-        {
-          name: "Plant vicks",
-          category: "Garden",
-          ratings: [
-            // { id: "23091994", rating: 2 },
-            // { id: "13021970", rating: 3 },
-          ],
-        },
-      ],
+      tasks: [],
     };
   },
   computed: mapGetters(["allTasks", "allCategories"]),
   created() {
-    this.sizeRatingsArray();
+    this.addRatings();
     this.fetchCategories();
   },
   methods: {
-    ...mapActions(["sizeRatingsArray", "fetchCategories", "deleteTask"]),
+    ...mapActions(["addRatings", "fetchCategories", "deleteTask"]),
     confirmTaskDelete(taskId) {
       this.$confirm(
         "This task will be permanently deleted. Would you like to continue?",
@@ -116,8 +75,9 @@ export default {
           center: true,
         }
       )
-        .then(() => {
-          this.deleteTask(taskId);
+        .then(async () => {
+          await this.deleteTask(taskId);
+          this.fetchCategories();
           this.$message({
             type: "success",
             message: "Delete completed",

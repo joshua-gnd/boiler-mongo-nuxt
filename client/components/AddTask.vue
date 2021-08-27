@@ -74,7 +74,7 @@ export default {
   },
   created() {},
   methods: {
-    ...mapActions(["addTask", "fetchCategoryOther"]),
+    ...mapActions(["addTask", "fetchCategoryOther", "addRatings"]),
     async submit(event) {
       event.preventDefault();
 
@@ -84,7 +84,7 @@ export default {
 
       let category = "";
 
-      if (this.other != false) {
+      if (this.other !== false) {
         category = this.input;
         if (this.input == "") {
           category = "Other";
@@ -102,6 +102,9 @@ export default {
 
       // add backend success receipt
       this.confirmAddTask();
+
+      this.addRatings();
+      this.fetchCategoryOther();
     },
 
     checkCategory() {

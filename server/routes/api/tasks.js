@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Task = require('../../models/Task')
+const Rating = require('../../models/Task')
 
 // get tasks
 router.get('/', async (req, res) => {
@@ -32,7 +33,6 @@ router.post('/', async (req, res) => {
 // update task
 router.put('/:id', async function (req, res) {
     try {
-        console.log(req.body)
         let task = await Task.findByIdAndUpdate({ _id: req.params.id }, req.body)
         task = await Task.findOne({ _id: req.params.id })
         res.send(task)

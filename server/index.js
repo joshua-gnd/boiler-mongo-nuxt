@@ -13,11 +13,13 @@ app.use(cors());
 // const todos = require('./routes/api/todos')
 const tasks = require('./routes/api/tasks')
 const dates = require('./routes/api/dates')
+const ratings = require('./routes/api/ratings')
 
 // app.use('/api/posts', posts)
 // app.use('/api/todos', todos)
 app.use('/api/tasks', tasks)
 app.use('/api/dates', dates)
+app.use('/api/ratings', ratings)
 
 const port = process.env.PORT || 3001;
 
