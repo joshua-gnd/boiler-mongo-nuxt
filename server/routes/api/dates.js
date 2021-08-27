@@ -32,7 +32,6 @@ router.post('/', async (req, res) => {
 // update date
 router.put('/:id', async function (req, res) {
     try {
-        console.log(req.body)
         let date = await Date.findByIdAndUpdate({ _id: req.params.id }, req.body)
         date = await Date.findOne({ _id: req.params.id })
         res.send(date)
