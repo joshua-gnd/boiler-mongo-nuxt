@@ -11,7 +11,7 @@ const TaskSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'rating',
         autopopulate: true
-    }],
+    }]
 }).plugin(require('mongoose-autopopulate'));
 
 Task = mongoose.model('task', TaskSchema)

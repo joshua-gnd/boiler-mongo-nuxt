@@ -20,6 +20,18 @@ router.get('/:id', async function (req, res) {
 });
 
 // add rating
+// router.post('/', async (req, res) => {
+//     try {
+//         console.log(req.body)
+//         const rating = await Rating.create(req.body)
+//         res.send(rating);
+
+//     } catch (e) {
+//         res.status(442).send(e.message);
+//     }
+// })
+
+// add rating
 router.post('/:id', async (req, res) => {
     try {
         let rating = await Rating.create(req.body)
