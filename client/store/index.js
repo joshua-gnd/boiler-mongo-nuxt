@@ -32,30 +32,36 @@ const actions = {
         let tasks = response2.data
 
         // creating an index in the tasks' ratings array for each date
-
         for (let i = 0; i < tasks.length; i++) {
+            let task = tasks[i]
+
             for (let j = 0; j < dates.length; j++) {
-                if (tasks[i].ratings[j].id != dates[j].id) {
-                    let id = dates[j].id
-                    let rating = 0
-                    tasks[i].ratings[j] = { id, rating }
+                let rating = task.ratings[j]
+
+                if (rating != undefined) {
+                    if (rating.id != dates[j].id || rating.id == undefined) {
+                        console.log("UPDATE rating: ", rating._id)
+                        // UPDATE RATING
+                        // // let id = dates[j].id
+                        // // let rating = 0
+                        // // rating = { id, rating }
+                    }
+                } else {
+                    console.log(`POST rating to task: name: ${task.name} id: ${task._id}`)
+                    // POST RATING
                 }
             }
-
-            let id = tasks[i]._id
-            let ratings = tasks[i].ratings
+            let id = task._id
+            let ratings = task.ratings
             let updateTask = { ratings }
 
             const response3 = await axios.put(
                 `http://localhost:3001/api/tasks/${id}`,
                 updateTask
             );
-
             commit('updateTask', response3.data);
         }
-
         commit('setTasks', tasks)
-
     },
 
     async addTask({ commit }, task) {
@@ -257,7 +263,7 @@ const mutations = {
     setselectCategories: (state, selectCategories) => (state.selectCategories = selectCategories),
 
     // ratings
-    newRating: (state, rating) => {},
+    newRating: (state, rating) => { },
 };
 
 export default {
