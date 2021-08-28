@@ -24,7 +24,7 @@ const actions = {
         commit('setTasks', response.data)
     },
 
-    async addRatings({ commit }) {
+    async addRatings({ commit, dispatch }) {
         const response = await axios.get('http://localhost:3001/api/dates/')
         let dates = response.data
 
@@ -40,15 +40,22 @@ const actions = {
 
                 if (rating != undefined) {
                     if (rating.id != dates[j].id || rating.id == undefined) {
-                        console.log("UPDATE rating: ", rating._id)
+                        // console.log("UPDATE rating: ", rating._id)
                         // UPDATE RATING
-                        // // let id = dates[j].id
-                        // // let rating = 0
-                        // // rating = { id, rating }
+                        let id = dates[j].id
+
+                        const response = await axios.put(
+                            `http://localhost:3001/api/ratings/${rating._id}`,
+                            { id, rating: 0 }
+                        );
+                        commit('updRating', response.data);
                     }
                 } else {
                     console.log(`POST rating to task: name: ${task.name} id: ${task._id}`)
                     // POST RATING
+                    let id = dates[j].id
+                    let taskId = task._id
+                    dispatch('addRating', {id, rating: 0, taskId})
                 }
             }
             let id = task._id
@@ -221,17 +228,22 @@ const actions = {
             `http://localhost:3001/api/dates/${updateDate.id}`,
             updateDate
         );
-
-        // console.log(response.data);
-
         commit('updateDate', response.data);
     },
 
     // Ratings
-    async addRating({ commit }, id, rating, taskId) {
+    async addRating({ commit }, {id, rating, taskId}) {
         const response = await axios.post(`http://localhost:3001/api/ratings/${taskId}`, { id, rating })
         commit('newRating', response.data)
 
+    },
+
+    async updateRating({ commit }, rating) {
+        const response = await axios.put(
+            `http://localhost:3001/api/ratings/${rating.id}`,
+            rating
+        );
+        commit('updRating', response.data);
     },
 };
 
@@ -264,6 +276,12 @@ const mutations = {
 
     // ratings
     newRating: (state, rating) => { },
+    updRating: (state, rating) => {
+        // const index = state.dates.findIndex(date => date.id === rating.id);
+        // if (index !== -1) {
+        //     state.dates.splice(index, 1, rating);
+        // }
+    },
 };
 
 export default {
