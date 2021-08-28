@@ -8,10 +8,11 @@ const TaskSchema = new Schema({
     },
     category: { type: String, default: "Other" },
     ratings: [{
-        id: Number,
-        rating: Number
+        type: Schema.Types.ObjectId,
+        ref: 'rating',
+        autopopulate: true
     }]
-}),
+}).plugin(require('mongoose-autopopulate'));
 
     Task = mongoose.model('task', TaskSchema)
 
