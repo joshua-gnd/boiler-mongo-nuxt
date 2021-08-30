@@ -74,7 +74,7 @@ export default {
   },
   created() {},
   methods: {
-    ...mapActions(["addTask", "fetchCategoryOther", "addRatings"]),
+    ...mapActions(["addTaskAndRatings", "fetchCategoryOther", "addRatings"]),
     async submit(event) {
       event.preventDefault();
 
@@ -94,7 +94,7 @@ export default {
       }
 
       let task = { name: this.task.name, category };
-      await this.addTask(task);
+      await this.addTaskAndRatings(task);
 
       this.task.name = "";
       //   this.value = "";
@@ -103,7 +103,7 @@ export default {
       // add backend success receipt
       this.confirmAddTask();
 
-      this.addRatings();
+      // this.addRatings();
       this.fetchCategoryOther();
     },
 

@@ -6,8 +6,13 @@ const RatingSchema = new Schema({
         type: Number,
         default: 0
     },
-    id: Number
-}),
+    id: Number,
+    date: {
+        type: Schema.Types.ObjectId,
+        ref: 'date',
+        autopopulate: true
+    }
+}).plugin(require('mongoose-autopopulate'));
 
     Rating = mongoose.model('rating', RatingSchema)
 

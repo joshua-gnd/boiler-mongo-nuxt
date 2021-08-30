@@ -33,7 +33,7 @@
               v-for="(rating, index) in task.ratings"
               :key="index"
             >
-              <option>{{ rating.rating }}</option>
+              <option>{{ rating.date }}</option>
               <option>0</option>
               <option>1</option>
               <option>2</option>
@@ -59,7 +59,7 @@ export default {
   },
   computed: mapGetters(["allTasks", "allCategories"]),
   created() {
-    this.addRatings();
+    // this.addRatings();
     this.fetchCategories();
   },
   methods: {

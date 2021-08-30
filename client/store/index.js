@@ -55,7 +55,7 @@ const actions = {
                     // POST RATING
                     let id = dates[j].id
                     let taskId = task._id
-                    dispatch('addRating', {id, rating: 0, taskId})
+                    dispatch('addRating', { id, rating: 0, taskId })
                 }
             }
             let id = task._id
@@ -71,25 +71,26 @@ const actions = {
         commit('setTasks', tasks)
     },
 
-    async addTask({ commit }, task) {
-        const response = await axios.get('http://localhost:3001/api/dates/')
-        let dates = response.data
 
-        let name = task.name
-        let category = task.category
-        // let ratings = []
+    async addTask({ commit }, { name, category }) {
+        const response = await axios.post('http://localhost:3001/api/tasks/', { name, category })
+        await commit('newTask', response.data)
+    },
 
-        // for (let i = 0; i < dates.length; i++) {
-        //     let id = dates[i].id
-        //     let rating = 0
-        //     ratings.push({ id, rating })
-        // }
+    async addTaskAndRatings({ commit, dispatch, getters }, { name, category }) {
+        await dispatch('addTask', { name, category })
+        await dispatch('fetchDates')
 
-        const response2 = await axios.post('http://localhost:3001/api/tasks/', { name, category })
-        commit('newTask', response2.data)
+        let dates = [...getters.allDates]
+        let tasks = [...getters.allTasks]
 
-        // commit('setTasks', response2.data)
-
+        for (let i = 0; i < dates.length; i++) {
+            console.log(`/${dates.length}`)
+            let rating = 0
+            let date = dates[i]._id
+            let taskId = tasks[0]._id
+            await dispatch('addRating', { rating, date, taskId })
+        }
     },
 
     async deleteTask({ commit }, id) {
@@ -159,61 +160,64 @@ const actions = {
         commit('setDates', response.data)
     },
 
-    async sizeDatesArray({ commit }) {
-        const response = await axios.get('http://localhost:3001/api/dates/')
-        let dates = response.data
+    async populateDatesArray({ dispatch, getters }) {
+        await dispatch('fetchDates')
+        let dates = [...getters.allDates]
 
-        let dateLength = dates.length
-        let dateDelete = dateLength - 30
+        if (dates.length < 30) {
+            let difference = 30 - dates.length
+            let id = 0
+            let month = "•"
+            let date = 0
+            let day = "•"
 
-        let id = moment().format("YYYYMMDD");
-        let month = moment().format("MMM").toUpperCase();
-        let date = moment().format("DD");
-        let day = moment().format("ddd").toUpperCase();
-
-        let iEnd = dates.length - 1;
-
-        // add today's date
-        if (dates.length == 0 || dates[iEnd].id != id) {
-            const response = await axios.post('http://localhost:3001/api/dates/', { id, month, date, day })
-            commit('newDate', response.data)
-        }
-
-        // console.log(dates[iEnd].day, dates[iEnd].date, dates[iEnd].month)
-
-        // resize array to length 30
-        if (dateLength < 30) {
-
-            id = 0
-            month = "•"
-            date = 0
-            day = "•"
-
-            while (dateLength < 30) {
-                const response2 = await axios.post('http://localhost:3001/api/dates/', { id, month, date, day })
-                commit('newDate', response2.data)
+            for (let i = difference; i > 0; i--) {
+                await dispatch('addDate', { id, month, date, day })
             }
-
-            // console.log("add. date array length: ", dateLength)
-
-        } else {
-
-            for (let i = 0; i < dateDelete; i++) {
-                let _id = dates[i]._id
-                await axios.delete(`http://localhost:3001/api/dates/${_id}`)
-                commit('removeDate', _id)
-
-            }
-
-            // console.log("delete. date array length: ", dateLength)
-
         }
-
-        commit('setDates', dates)
+        await dispatch('addDateToday')
     },
 
-    async addDate({ commit }, date, priority) {
-        const response = await axios.post('http://localhost:3001/api/dates/', { date, priority })
+    async addDateToday({ dispatch, getters }) {
+        await dispatch('fetchDates')
+        let dates = [...getters.allDates]
+        let i = dates.length - 1
+        let id = moment().format("YYYYMMDD");
+
+        if (dates[i].id != id) {
+            let month = moment().format("MMM").toUpperCase();
+            let date = moment().format("DD");
+            let day = moment().format("ddd").toUpperCase();
+
+            await dispatch('deleteDate', dates[0]._id)
+            await dispatch('addDate', { id, month, date, day })
+            await dispatch('updateRatingsToday')
+        }
+    },
+
+    async updateRatingsToday({ dispatch, getters }) {
+        await dispatch('fetchDates')
+        await dispatch('fetchTasks')
+        let dates = [...getters.allDates]
+        let tasks = [...getters.allTasks]
+        let rating = 0
+        let date = dates[dates.length - 1]._id
+
+        for (let i = 0; i < tasks.length; i++) {
+            let taskId = tasks[i]._id
+            let ratingsId = tasks[i].ratings[0]._id
+
+            await dispatch('deleteRating', ratingsId)
+            await dispatch('addRating', { rating, date, taskId })
+
+            console.log(`/${tasks.length}`)
+        }
+        // await dispatch('fetchDates')
+        // await dispatch('fetchTasks')
+    },
+
+    async addDate({ commit }, { id, month, date, day }) {
+        const response = await axios.post('http://localhost:3001/api/dates/', { id, month, date, day })
         commit('newDate', response.data)
 
     },
@@ -232,8 +236,10 @@ const actions = {
     },
 
     // Ratings
-    async addRating({ commit }, {id, rating, taskId}) {
-        const response = await axios.post(`http://localhost:3001/api/ratings/${taskId}`, { id, rating })
+    async addRating({ commit }, { rating, date, taskId }) {
+        // fetch dates, add rating for each date, from which id can be retrieved
+        // retrieve task that id will be added to
+        const response = await axios.post(`http://localhost:3001/api/ratings/${taskId}`, { rating, date })
         commit('newRating', response.data)
 
     },
@@ -244,6 +250,11 @@ const actions = {
             rating
         );
         commit('updRating', response.data);
+    },
+
+    async deleteRating({ commit }, id) {
+        await axios.delete(`http://localhost:3001/api/ratings/${id}`)
+        commit('removeDate', id)
     },
 };
 
@@ -282,6 +293,10 @@ const mutations = {
         //     state.dates.splice(index, 1, rating);
         // }
     },
+    removeRating: (state, id) => {
+        // (state.dates = state.dates.filter(date => date.id !== id))
+    },
+
 };
 
 export default {

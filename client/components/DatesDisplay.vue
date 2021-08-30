@@ -34,10 +34,10 @@ export default {
     "allDates",
   ]),
     created() {
-    this.sizeDatesArray();
+    this.populateDatesArray();
   },
   methods: {
-    ...mapActions(["sizeDatesArray"]),
+    ...mapActions(["populateDatesArray"]),
   },
 };
 </script>
