@@ -247,7 +247,7 @@ const actions = {
     async updateRating({ commit }, rating) {
         const response = await axios.put(
             `http://localhost:3001/api/ratings/${rating.id}`,
-            rating
+            rating.rating
         );
         commit('updRating', response.data);
     },
@@ -288,10 +288,10 @@ const mutations = {
     // ratings
     newRating: (state, rating) => { },
     updRating: (state, rating) => {
-        // const index = state.dates.findIndex(date => date.id === rating.id);
-        // if (index !== -1) {
-        //     state.dates.splice(index, 1, rating);
-        // }
+        const index = state.dates.findIndex(date => date.id === rating.id);
+        if (index !== -1) {
+            state.dates.splice(index, 1, rating);
+        }
     },
     removeRating: (state, id) => {
         // (state.dates = state.dates.filter(date => date.id !== id))

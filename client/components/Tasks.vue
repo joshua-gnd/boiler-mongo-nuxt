@@ -5,8 +5,8 @@
         <h3 class="text-2xl font-medium mb-2">{{ category.category }}</h3>
         <div
           class="flex flex-row"
-          v-for="(task, index) in category.tasks"
-          :key="index"
+          v-for="(task, index2) in category.tasks"
+          :key="index2"
         >
           <div class="w-1/6 flex flex-row justify-between">
             <span>{{ task.name }}</span>
@@ -16,7 +16,10 @@
             ></i>
           </div>
 
-          <form class="flex flex-row justify-between w-5/6 mb-1">
+          <form
+            class="flex flex-row justify-between w-5/6 mb-1"
+            v-if="categories"
+          >
             <select
               id="mySelect"
               class="
@@ -30,19 +33,24 @@
                 text-center
                 cursor-pointer
               "
-              v-for="(rating, index) in task.ratings"
-              :key="index"
+              v-for="(rating, index3) in task.ratings"
+              :key="index3"
+              @change="
+                  updateRating({
+                    id: rating._id,
+                    rating:
+                      {rating: categories[index].tasks[index2].ratings[index3].rating},
+                  })
+              "
+              v-model="categories[index].tasks[index2].ratings[index3].rating"
             >
-              <option>{{ rating.date }}</option>
-              <option>0</option>
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
+              <option :value="rating.rating">{{ rating.rating }}</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
             </select>
-            <!-- <input type="button" onclick="getOption()" value="Click Me!" /> -->
           </form>
-
-          <!-- </div> -->
         </div>
       </div>
     </div>
@@ -55,15 +63,24 @@ export default {
   date() {
     return {
       tasks: [],
+      value: "",
+      categories: [],
     };
   },
   computed: mapGetters(["allTasks", "allCategories"]),
   created() {
-    // this.addRatings();
     this.fetchCategories();
   },
+  mounted() {
+    this.populateCategories();
+  },
   methods: {
-    ...mapActions(["addRatings", "fetchCategories", "deleteTask"]),
+    ...mapActions([
+      "addRatings",
+      "updateRating",
+      "fetchCategories",
+      "deleteTask",
+    ]),
     confirmTaskDelete(taskId) {
       this.$confirm(
         "This task will be permanently deleted. Would you like to continue?",
@@ -89,6 +106,10 @@ export default {
             message: "Delete canceled",
           });
         });
+    },
+    async populateCategories() {
+      await this.fetchCategories();
+      this.categories = await [...this.allCategories];
     },
   },
 };
