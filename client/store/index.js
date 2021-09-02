@@ -24,60 +24,12 @@ const actions = {
         commit('setTasks', response.data)
     },
 
-    async addRatings({ commit, dispatch }) {
-        const response = await axios.get('http://localhost:3001/api/dates/')
-        let dates = response.data
-
-        const response2 = await axios.get('http://localhost:3001/api/tasks/')
-        let tasks = response2.data
-
-        // creating an index in the tasks' ratings array for each date
-        for (let i = 0; i < tasks.length; i++) {
-            let task = tasks[i]
-
-            for (let j = 0; j < dates.length; j++) {
-                let rating = task.ratings[j]
-
-                if (rating != undefined) {
-                    if (rating.id != dates[j].id || rating.id == undefined) {
-                        // console.log("UPDATE rating: ", rating._id)
-                        // UPDATE RATING
-                        let id = dates[j].id
-
-                        const response = await axios.put(
-                            `http://localhost:3001/api/ratings/${rating._id}`,
-                            { id, rating: 0 }
-                        );
-                        commit('updRating', response.data);
-                    }
-                } else {
-                    console.log(`POST rating to task: name: ${task.name} id: ${task._id}`)
-                    // POST RATING
-                    let id = dates[j].id
-                    let taskId = task._id
-                    dispatch('addRating', { id, rating: 0, taskId })
-                }
-            }
-            let id = task._id
-            let ratings = task.ratings
-            let updateTask = { ratings }
-
-            const response3 = await axios.put(
-                `http://localhost:3001/api/tasks/${id}`,
-                updateTask
-            );
-            commit('updateTask', response3.data);
-        }
-        commit('setTasks', tasks)
-    },
-
-
     async addTask({ commit }, { name, category }) {
         const response = await axios.post('http://localhost:3001/api/tasks/', { name, category })
         await commit('newTask', response.data)
     },
 
-    async addTaskAndRatings({ commit, dispatch, getters }, { name, category }) {
+    async addTaskAndRatings({ dispatch, getters }, { name, category }) {
         await dispatch('addTask', { name, category })
         await dispatch('fetchDates')
 
@@ -85,17 +37,31 @@ const actions = {
         let tasks = [...getters.allTasks]
 
         for (let i = 0; i < dates.length; i++) {
-            console.log(`/${dates.length}`)
             let rating = 0
             let date = dates[i]._id
             let taskId = tasks[0]._id
             await dispatch('addRating', { rating, date, taskId })
+            console.log(`/${dates.length}`)
         }
+
     },
 
     async deleteTask({ commit }, id) {
         await axios.delete(`http://localhost:3001/api/tasks/${id}`)
         commit('removeTask', id)
+    },
+
+    async deleteTaskAndRatings({ dispatch }, taskId) {
+        const response = await axios.get(`http://localhost:3001/api/tasks/${taskId}`)
+        let task = response.data
+        let ratings = task.ratings
+
+        for (let i = 0; i < ratings.length; i++) {
+            let ratingId = ratings[i]._id
+            await dispatch('deleteRating', ratingId)
+            console.log(`${ratings.length}`)
+        }
+        await dispatch('deleteTask', taskId)
     },
 
     async updateTask({ commit }, updateTask) {
@@ -130,11 +96,7 @@ const actions = {
                 categories.push(newCategory);
             }
         }
-
-        // console.log(categories)
-
         commit('setCategories', categories)
-
         // this.categories = _.groupBy(array, "category");
         // console.log(this.categories)
     },
@@ -237,11 +199,8 @@ const actions = {
 
     // Ratings
     async addRating({ commit }, { rating, date, taskId }) {
-        // fetch dates, add rating for each date, from which id can be retrieved
-        // retrieve task that id will be added to
         const response = await axios.post(`http://localhost:3001/api/ratings/${taskId}`, { rating, date })
         commit('newRating', response.data)
-
     },
 
     async updateRating({ commit }, rating) {

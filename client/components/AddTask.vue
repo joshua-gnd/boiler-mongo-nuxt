@@ -74,7 +74,7 @@ export default {
   },
   created() {},
   methods: {
-    ...mapActions(["addTaskAndRatings", "fetchCategoryOther", "addRatings"]),
+    ...mapActions(["addTaskAndRatings", "fetchCategoryOther"]),
     async submit(event) {
       event.preventDefault();
 
@@ -97,14 +97,11 @@ export default {
       await this.addTaskAndRatings(task);
 
       this.task.name = "";
-      //   this.value = "";
-      //   this.checkCategory();
 
       // add backend success receipt
       this.confirmAddTask();
 
-      // this.addRatings();
-      this.fetchCategoryOther();
+      await this.fetchCategoryOther();
     },
 
     checkCategory() {

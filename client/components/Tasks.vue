@@ -20,6 +20,7 @@
             class="flex flex-row justify-between w-5/6 mb-1"
             v-if="categories"
           >
+          <!-- v-if="allCategories[index].tasks[index2].ratings[index3]" -->
             <select
               id="mySelect"
               class="
@@ -28,7 +29,8 @@
                 rounded
                 h-6
                 w-6
-                p-0
+                pl-1.5
+                pb-1
                 m-0
                 text-center
                 cursor-pointer
@@ -36,16 +38,20 @@
               v-for="(rating, index3) in task.ratings"
               :key="index3"
               @change="
-                  updateRating({
-                    id: rating._id,
+                updateRating({
+                  id: rating._id,
+                  rating: {
                     rating:
-                      {rating: categories[index].tasks[index2].ratings[index3].rating},
-                  })
+                      categories[index].tasks[index2].ratings[index3].rating,
+                  },
+                })
               "
               v-model="categories[index].tasks[index2].ratings[index3].rating"
             >
-              <option :value="rating.rating">{{ rating.rating }}</option>
-              <option value="0">0</option>
+              <option :value="rating.rating">
+                {{ rating.rating == 0 ? "•" : rating.rating }}
+              </option>
+              <option value="0">•</option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -76,10 +82,9 @@ export default {
   },
   methods: {
     ...mapActions([
-      "addRatings",
       "updateRating",
       "fetchCategories",
-      "deleteTask",
+      "deleteTaskAndRatings",
     ]),
     confirmTaskDelete(taskId) {
       this.$confirm(
@@ -93,7 +98,7 @@ export default {
         }
       )
         .then(async () => {
-          await this.deleteTask(taskId);
+          await this.deleteTaskAndRatings(taskId);
           this.fetchCategories();
           this.$message({
             type: "success",
