@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div v-if="allCategories">
     <div class="mb-6" v-for="(category, index) in allCategories" :key="index">
-      <div>
+      <div v-if="allCategories[index].tasks && categories">
         <h3 class="text-2xl font-medium mb-2">{{ category.category }}</h3>
         <div
           class="flex flex-row"
@@ -18,9 +18,9 @@
 
           <form
             class="flex flex-row justify-between w-5/6 mb-1"
-            v-if="categories"
+            v-if="allCategories[index].tasks[index2].ratings && categories[index].tasks[index2]"
           >
-          <!-- v-if="allCategories[index].tasks[index2].ratings[index3]" -->
+            <!-- v-if="allCategories[index].tasks[index2].ratings[index3]" -->
             <select
               id="mySelect"
               class="
@@ -79,13 +79,12 @@ export default {
   },
   mounted() {
     this.populateCategories();
+    this.$root.$on("populateCategories", () => {
+      this.populateCategories();
+    });
   },
   methods: {
-    ...mapActions([
-      "updateRating",
-      "fetchCategories",
-      "deleteTaskAndRatings",
-    ]),
+    ...mapActions(["updateRating", "fetchCategories", "deleteTaskAndRatings"]),
     confirmTaskDelete(taskId) {
       this.$confirm(
         "This task will be permanently deleted. Would you like to continue?",

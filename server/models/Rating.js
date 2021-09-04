@@ -11,6 +11,10 @@ const RatingSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'date',
         autopopulate: true
+    },
+    task: {
+        type: Schema.Types.ObjectId,
+        ref: 'task',
     }
 }).plugin(require('mongoose-autopopulate'));
 

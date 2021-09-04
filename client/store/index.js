@@ -37,6 +37,7 @@ const actions = {
         let tasks = [...getters.allTasks]
 
         for (let i = 0; i < dates.length; i++) {
+            // for (let i = 0; i < 1; i++) {
             let rating = 0
             let date = dates[i]._id
             let taskId = tasks[0]._id
@@ -199,7 +200,7 @@ const actions = {
 
     // Ratings
     async addRating({ commit }, { rating, date, taskId }) {
-        const response = await axios.post(`http://localhost:3001/api/ratings/${taskId}`, { rating, date })
+        const response = await axios.post(`http://localhost:3001/api/ratings/${taskId}`, { rating, date, task: taskId })
         commit('newRating', response.data)
     },
 
@@ -245,7 +246,13 @@ const mutations = {
     setselectCategories: (state, selectCategories) => (state.selectCategories = selectCategories),
 
     // ratings
-    newRating: (state, rating) => { },
+    newRating: (state, rating) => {
+        const index = state.tasks.findIndex(task => task._id === rating.task);
+        // console.log("index", index)
+        if (index !== -1) {
+            state.tasks[index].ratings.unshift(rating);
+        }
+    },
     updRating: (state, rating) => {
         const index = state.dates.findIndex(date => date.id === rating.id);
         if (index !== -1) {

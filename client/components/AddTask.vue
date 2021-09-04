@@ -95,6 +95,7 @@ export default {
 
       let task = { name: this.task.name, category };
       await this.addTaskAndRatings(task);
+      await this.$root.$emit('populateCategories')
 
       this.task.name = "";
 

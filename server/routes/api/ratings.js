@@ -36,10 +36,10 @@ router.post('/:id', async (req, res) => {
     try {
         let rating = await Rating.create(req.body)
         let task = await Task.findOne({ _id: req.params.id })
-        task.ratings.push(rating.populate('rating'))
+        task.ratings.push(rating)
         await task.save()
         task = await Task.findOne({ _id: req.params.id })
-        res.send(task)
+        res.send(rating)
     } catch (e) {
         res.status(442).send(e.message);
     }
