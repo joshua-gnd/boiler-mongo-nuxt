@@ -98,7 +98,7 @@ export default {
       )
         .then(async () => {
           await this.deleteTaskAndRatings(taskId);
-          this.fetchCategories();
+          await this.$root.$emit('populateCategories')
           this.$message({
             type: "success",
             message: "Delete completed",

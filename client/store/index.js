@@ -10,7 +10,6 @@ const state = () => ({
 });
 
 const getters = {
-    // allTodos: (state) => state.todos,
     allTasks: (state) => state.tasks,
     allDates: (state) => state.dates,
     allCategories: (state) => state.categories,
@@ -37,7 +36,7 @@ const actions = {
         let tasks = [...getters.allTasks]
 
         for (let i = 0; i < dates.length; i++) {
-            // for (let i = 0; i < 1; i++) {
+        // for (let i = 0; i < 1; i++) {
             let rating = 0
             let date = dates[i]._id
             let taskId = tasks[0]._id
@@ -214,7 +213,7 @@ const actions = {
 
     async deleteRating({ commit }, id) {
         await axios.delete(`http://localhost:3001/api/ratings/${id}`)
-        commit('removeDate', id)
+        // commit('removeDate', id)
     },
 };
 
@@ -248,15 +247,17 @@ const mutations = {
     // ratings
     newRating: (state, rating) => {
         const index = state.tasks.findIndex(task => task._id === rating.task);
-        // console.log("index", index)
-        if (index !== -1) {
+       if (index !== -1) {
             state.tasks[index].ratings.unshift(rating);
         }
     },
     updRating: (state, rating) => {
-        const index = state.dates.findIndex(date => date.id === rating.id);
+        const index = state.tasks.findIndex(task => task._id === rating.task);
         if (index !== -1) {
-            state.dates.splice(index, 1, rating);
+            const index2 = state.tasks[index].ratings.findIndex(rate => rate._id === rating._id);
+            if (index2 !== -1) {
+                state.tasks[index].ratings.splice(index2, 1, rating);
+            }
         }
     },
     removeRating: (state, id) => {

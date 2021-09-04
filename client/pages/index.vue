@@ -20,7 +20,7 @@
 </template>
 
 <script>
-// import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import DatesDisplay from "../components/DatesDisplay.vue";
 import Tasks from "../components/Tasks.vue";
 import AddTask from "../components/AddTask.vue";
@@ -31,13 +31,13 @@ export default {
   },
   // computed: mapGetters(["allTasks"]),
   created() {
-    // this.fetchCategories();
+    this.fetchTasks();
   },
   async mounted() {
     this.consoleLog();
   },
   methods: {
-    // ...mapActions(["fetchTasks", "fetchDates"]),
+    ...mapActions(["fetchTasks"]),
 
     adjustRatingColor() {
       switch (expression) {
