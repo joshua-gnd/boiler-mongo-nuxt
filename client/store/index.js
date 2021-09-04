@@ -36,7 +36,6 @@ const actions = {
         let tasks = [...getters.allTasks]
 
         for (let i = 0; i < dates.length; i++) {
-        // for (let i = 0; i < 1; i++) {
             let rating = 0
             let date = dates[i]._id
             let taskId = tasks[0]._id
