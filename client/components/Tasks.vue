@@ -23,7 +23,7 @@
               categories[index] &&
               categories[index].tasks &&
               categories[index].tasks[index2] &&
-              categories[index].tasks[index2].ratings
+              categories[index].tasks[index2].ratings 
             "
           >
             <select

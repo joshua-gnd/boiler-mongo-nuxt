@@ -152,11 +152,14 @@ const actions = {
 
             await dispatch('deleteDate', dates[0]._id)
             await dispatch('addDate', { id, month, date, day })
-            await dispatch('updateRatingsToday')
         }
+
+        let todaysId = dates[i].id
+        await dispatch('updateRatingsToday', todaysId)
     },
 
-    async updateRatingsToday({ dispatch, getters }) {
+    async updateRatingsToday({ dispatch, getters }, todaysId) {
+        // console.log({todaysId, todaysId2})
         await dispatch('fetchDates')
         await dispatch('fetchTasks')
         let dates = [...getters.allDates]
@@ -166,12 +169,14 @@ const actions = {
 
         for (let i = 0; i < tasks.length; i++) {
             let taskId = tasks[i]._id
-            let ratingsId = tasks[i].ratings[0]._id
+            let ratingId = tasks[i].ratings[0]._id
+            let ratingId2 = tasks[i].ratings[tasks[i].ratings.length - 1].date.id
 
-            await dispatch('deleteRating', ratingsId)
-            await dispatch('addRating', { rating, date, taskId })
-
-            console.log(`/${tasks.length}`)
+            if (ratingId2 != todaysId) {
+                await dispatch('deleteRating', ratingId)
+                await dispatch('addRating', { rating, date, taskId })
+                console.log(`/${tasks.length}`)
+            }
         }
         // await dispatch('fetchDates')
         // await dispatch('fetchTasks')
@@ -187,6 +192,16 @@ const actions = {
         await axios.delete(`http://localhost:3001/api/dates/${id}`)
         commit('removeDate', id)
     },
+
+    // async deleteDates({ dispatch, getters }, id) {
+    //     await dispatch('fetchDates')
+    //     let dates = [...getters.allDates]
+
+    //     for (let i = 0; i < dates.length; i++) {
+    //         let id = dates[i]._id
+    //         dispatch('deleteDate', id)
+    //     }
+    // },
 
     async updateDate({ commit }, updateDate) {
         const response = await axios.put(
@@ -246,7 +261,7 @@ const mutations = {
     // ratings
     newRating: (state, rating) => {
         const index = state.tasks.findIndex(task => task._id === rating.task);
-       if (index !== -1) {
+        if (index !== -1) {
             state.tasks[index].ratings.unshift(rating);
         }
     },

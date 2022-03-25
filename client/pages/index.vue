@@ -8,14 +8,8 @@
       <DatesDisplay />
       <Tasks />
       <AddTask />
+      
     </div>
-
-    <div class="container">
-      <!-- <AddTodo /> -->
-      <!-- <FilterTodos/> -->
-      <!-- <Todos /> -->
-    </div>
-    <!-- <PostComponent /> -->
   </div>
 </template>
 
@@ -29,35 +23,12 @@ export default {
   data() {
     return {};
   },
-  // computed: mapGetters(["allTasks"]),
   created() {
     this.fetchTasks();
-  },
-  async mounted() {
-    this.consoleLog();
+    // this.deleteDates();
   },
   methods: {
-    ...mapActions(["fetchTasks"]),
-
-    adjustRatingColor() {
-      switch (expression) {
-        case x:
-          // code block
-          break;
-        case y:
-          // code block
-          break;
-        default:
-        // code block
-      }
-    },
-
-    async consoleLog() {
-      // setTimeout(() => {
-      //   console.log(this.datesLength);
-      // }, 1500);
-      // await console.log(this.allTasks);
-    },
+    ...mapActions(["fetchTasks", "deleteDates"]),
   },
 };
 </script>
